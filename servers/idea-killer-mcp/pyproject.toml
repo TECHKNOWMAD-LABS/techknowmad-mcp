@@ -1,0 +1,11 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "idea-killer-mcp"
+version = "0.1.0"
+description = "Systematically critique and kill bad ideas MCP server"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+dependencies = ["mcp>=1.0.0"]

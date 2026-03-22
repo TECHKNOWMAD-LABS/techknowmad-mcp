@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "techknowmad-mcp"
+version = "0.1.0"
+description = "TechKnowmad MCP Server Monorepo"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.0.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["servers"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--import-mode=importlib"
+
+[tool.hatch.build.targets.wheel]
+packages = ["servers"]
