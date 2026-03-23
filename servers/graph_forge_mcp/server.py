@@ -48,7 +48,17 @@ def _create_graph_logic(nodes: list, edges: list, name: str) -> dict:
 
 
 def _bfs_path(adj: dict, src: str, dst: str) -> list | None:
-    """BFS to find shortest path."""
+    """Find the shortest path between two nodes using breadth-first search.
+
+    Args:
+        adj: Adjacency list dict from _build_adjacency.
+        src: Source node ID.
+        dst: Destination node ID.
+
+    Returns:
+        List of node IDs forming the shortest path (inclusive), or None if
+        no path exists or either node is missing from the adjacency list.
+    """
     if src not in adj or dst not in adj:
         return None
     visited = {src}
@@ -67,7 +77,21 @@ def _bfs_path(adj: dict, src: str, dst: str) -> list | None:
 
 
 def _query_graph_logic(graph_data: dict, query: str) -> dict:
-    """Query a graph."""
+    """Execute a query against a graph data structure.
+
+    Supported query formats:
+        - ``neighbors:<node_id>`` — return list of adjacent node IDs
+        - ``path:<src>:<dst>`` — BFS shortest path between two nodes
+        - ``degree:<node_id>`` — number of edges incident to a node
+
+    Args:
+        graph_data: Dict with 'nodes' (list of {id, label}) and 'edges'
+            (list of {source, target, weight}).
+        query: Query string in one of the supported formats above.
+
+    Returns:
+        Dict with 'query' and either 'result' (success) or 'error' (unknown format).
+    """
     nodes = graph_data.get("nodes", [])
     edges = graph_data.get("edges", [])
     adj = _build_adjacency(nodes, edges)

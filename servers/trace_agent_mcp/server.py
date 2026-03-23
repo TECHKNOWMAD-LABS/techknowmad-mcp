@@ -14,7 +14,18 @@ _trace_meta: dict[str, dict] = {}
 
 
 def _start_trace_logic(trace_id: str, agent_name: str) -> dict:
-    """Initialize a new trace."""
+    """Initialize a new agent execution trace in the in-memory store.
+
+    Creates an empty step list for the trace_id. If a trace with the same
+    trace_id already exists, it is overwritten (reset).
+
+    Args:
+        trace_id: Unique string identifier for this trace session.
+        agent_name: Human-readable name of the agent being traced.
+
+    Returns:
+        Dict with keys: status, trace_id, agent_name, started_at (ISO 8601 UTC).
+    """
     timestamp = datetime.now(timezone.utc).isoformat()
     _traces[trace_id] = []
     _trace_meta[trace_id] = {

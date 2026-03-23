@@ -143,7 +143,19 @@ def _evaluate_test_case(test_case: dict) -> dict:
 
 
 def _run_benchmark_logic(function_spec: str, test_cases: list) -> dict:
-    """Simulate benchmark run."""
+    """Simulate a benchmark run against test cases with pass/fail evaluation.
+
+    Evaluates each test case using _evaluate_test_case and aggregates results.
+
+    Args:
+        function_spec: Human-readable description of the function under test.
+            Truncated to 200 chars. Handles None gracefully.
+        test_cases: List of dicts with 'input' and 'expected' keys.
+            None or non-list inputs are coerced to empty list.
+
+    Returns:
+        Dict with keys: function_spec, total, passed, failed, pass_rate, results.
+    """
     if test_cases is None:
         test_cases = []
     if not isinstance(test_cases, list):
