@@ -3,6 +3,7 @@ from mcp.server import Server
 import mcp.types as types
 import json
 from datetime import datetime, timezone
+from functools import lru_cache
 from typing import Any
 
 app = Server("ground-truth-mcp")
@@ -27,8 +28,12 @@ def _store_ground_truth_logic(key: str, value: str, source: str) -> dict:
     }
 
 
+@lru_cache(maxsize=1024)
 def _token_overlap(text_a: str, text_b: str) -> float:
-    """Compute Jaccard similarity of word tokens."""
+    """Compute Jaccard similarity of word tokens.
+
+    Cached: identical (text_a, text_b) pairs return from cache.
+    """
     tokens_a = set(text_a.lower().split())
     tokens_b = set(text_b.lower().split())
     if not tokens_a and not tokens_b:
