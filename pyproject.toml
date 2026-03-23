@@ -24,3 +24,10 @@ addopts = "--import-mode=importlib"
 
 [tool.hatch.build.targets.wheel]
 packages = ["servers"]
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.151.9",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.7",
+]
