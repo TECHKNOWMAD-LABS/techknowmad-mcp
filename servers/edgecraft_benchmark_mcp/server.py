@@ -59,6 +59,10 @@ _EDGE_CASES: dict[str, list[dict]] = {
 
 def _generate_edge_cases_logic(input_type: str, constraints: dict) -> dict:
     """Generate edge cases for the given input type."""
+    if not input_type:
+        input_type = "string"
+    if constraints is None:
+        constraints = {}
     type_lower = input_type.lower()
     base_cases = _EDGE_CASES.get(type_lower, _EDGE_CASES["string"])
 
@@ -140,6 +144,10 @@ def _evaluate_test_case(test_case: dict) -> dict:
 
 def _run_benchmark_logic(function_spec: str, test_cases: list) -> dict:
     """Simulate benchmark run."""
+    if test_cases is None:
+        test_cases = []
+    if not isinstance(test_cases, list):
+        test_cases = list(test_cases) if hasattr(test_cases, "__iter__") else []
     results = []
     for tc in test_cases:
         result = _evaluate_test_case(tc)
@@ -162,6 +170,10 @@ def _run_benchmark_logic(function_spec: str, test_cases: list) -> dict:
 
 def _compare_benchmarks_logic(benchmark_a: dict, benchmark_b: dict) -> dict:
     """Compare two benchmark result dicts."""
+    if not isinstance(benchmark_a, dict):
+        benchmark_a = {}
+    if not isinstance(benchmark_b, dict):
+        benchmark_b = {}
     metrics = ["total", "passed", "failed", "pass_rate"]
     comparison = {}
     wins_a = 0

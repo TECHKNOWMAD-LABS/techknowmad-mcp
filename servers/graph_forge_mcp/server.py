@@ -10,6 +10,10 @@ app = Server("graph-forge-mcp")
 
 def _build_adjacency(nodes: list, edges: list) -> dict:
     """Build adjacency list from nodes and edges."""
+    if nodes is None:
+        nodes = []
+    if edges is None:
+        edges = []
     adj: dict[str, list] = {n["id"]: [] for n in nodes}
     for edge in edges:
         src = edge["source"]
