@@ -1,9 +1,9 @@
 """edgecraft-benchmark-mcp — Benchmark edge cases."""
-from mcp.server import Server
-import mcp.types as types
 import json
-import math
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("edgecraft-benchmark-mcp")
 
@@ -85,10 +85,10 @@ def _generate_edge_cases_logic(input_type: str, constraints: dict) -> dict:
     if type_lower == "integer":
         if "min" in constraints:
             filtered_cases.append({"value": constraints["min"], "description": f"constraint min ({constraints['min']})"})
-            filtered_cases.append({"value": constraints["min"] - 1, "description": f"just below constraint min"})
+            filtered_cases.append({"value": constraints["min"] - 1, "description": "just below constraint min"})
         if "max" in constraints:
             filtered_cases.append({"value": constraints["max"], "description": f"constraint max ({constraints['max']})"})
-            filtered_cases.append({"value": constraints["max"] + 1, "description": f"just above constraint max"})
+            filtered_cases.append({"value": constraints["max"] + 1, "description": "just above constraint max"})
 
     return {
         "input_type": input_type,
@@ -129,10 +129,10 @@ def _evaluate_test_case(test_case: dict) -> dict:
         reasoning = f"List length comparison: {len(input_val)} vs {len(expected)}"
     elif isinstance(expected, dict) and isinstance(input_val, dict):
         passes = set(expected.keys()) <= set(input_val.keys())
-        reasoning = f"Dict key subset check"
+        reasoning = "Dict key subset check"
     else:
         passes = str(input_val) == str(expected)
-        reasoning = f"String repr comparison"
+        reasoning = "String repr comparison"
 
     return {
         "input": str(input_val)[:100],

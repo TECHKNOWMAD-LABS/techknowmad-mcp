@@ -1,16 +1,17 @@
 """Extended tests for negativa-score — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.negativa_score.server import (
+    _compute_risk_profile_logic,
+    _rank_by_downside_logic,
     _score_dimension,
     _score_negatives_logic,
-    _rank_by_downside_logic,
-    _compute_risk_profile_logic,
     handle_call_tool,
 )
 

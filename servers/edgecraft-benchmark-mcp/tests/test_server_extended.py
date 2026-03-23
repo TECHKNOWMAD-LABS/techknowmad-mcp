@@ -1,18 +1,18 @@
 """Extended tests for edgecraft-benchmark-mcp — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
-import os
 import math
+import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.edgecraft_benchmark_mcp.server import (
-    _generate_edge_cases_logic,
-    _evaluate_test_case,
-    _run_benchmark_logic,
     _compare_benchmarks_logic,
-    handle_list_tools,
+    _evaluate_test_case,
+    _generate_edge_cases_logic,
+    _run_benchmark_logic,
     handle_call_tool,
 )
 

@@ -1,9 +1,10 @@
 """ground-truth-mcp — Validate claims against ground truth."""
-from mcp.server import Server
-import mcp.types as types
 import json
 from datetime import datetime, timezone
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("ground-truth-mcp")
 
@@ -88,9 +89,6 @@ def _compare_outputs_logic(output_a: str, output_b: str, criteria: list) -> dict
 
     for criterion in criteria:
         crit_lower = criterion.lower()
-        # Keyword overlap with criterion
-        overlap_a = _token_overlap(output_a, crit_lower)
-        overlap_b = _token_overlap(output_b, crit_lower)
         crit_tokens = set(crit_lower.split())
 
         # Score based on criterion keyword presence in output

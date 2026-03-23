@@ -1,16 +1,16 @@
 """forge-generate-mcp — Generate code and artifacts."""
-from mcp.server import Server
-import mcp.types as types
 import json
 import re
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("forge-generate-mcp")
 
 
 def _extract_identifiers(spec: str) -> tuple[list[str], list[str]]:
     """Extract potential function and class names from a spec."""
-    words = re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b", spec)
     # Class signals: words after "class", capitalized, or ending in er/or/ion/Manager/Service
     class_signals = {"class", "service", "manager", "handler", "processor", "controller", "model"}
     func_signals = {"function", "method", "def", "calculate", "compute", "process", "get", "set", "create", "update", "delete", "fetch", "parse", "validate", "transform"}
@@ -52,14 +52,14 @@ def _generate_code_logic(spec: str, language: str, style: str) -> dict:
         if style == "class-based":
             for cls in classes[:2]:
                 lines.append(f"class {cls}:")
-                lines.append(f'    """Auto-generated class."""')
+                lines.append('    """Auto-generated class."""')
                 lines.append("")
                 lines.append("    def __init__(self) -> None:")
                 lines.append("        pass")
                 lines.append("")
                 for fn in functions[:2]:
                     lines.append(f"    def {fn}(self, data: Any) -> Any:")
-                    lines.append(f'        """Process data."""')
+                    lines.append('        """Process data."""')
                     lines.append("        raise NotImplementedError")
                     lines.append("")
         else:
@@ -78,14 +78,14 @@ def _generate_code_logic(spec: str, language: str, style: str) -> dict:
                 lines.append(f"class {cls} {{")
                 for fn in functions[:2]:
                     lines.append(f"  {fn}(data{type_hint}){type_hint} {{")
-                    lines.append(f"    throw new Error('Not implemented');")
+                    lines.append("    throw new Error('Not implemented');")
                     lines.append("  }")
                 lines.append("}")
                 lines.append("")
         else:
             for fn in functions[:3]:
                 lines.append(f"function {fn}(data{type_hint}){type_hint} {{")
-                lines.append(f"  throw new Error('Not implemented');")
+                lines.append("  throw new Error('Not implemented');")
                 lines.append("}")
                 lines.append("")
 
@@ -96,7 +96,7 @@ def _generate_code_logic(spec: str, language: str, style: str) -> dict:
         for fn in functions[:3]:
             fn_go = "".join(w.capitalize() for w in fn.split("_"))
             lines.append(f"func {fn_go}(data interface{{}}) interface{{}} {{")
-            lines.append(f'\tpanic("not implemented")')
+            lines.append('\tpanic("not implemented")')
             lines.append("}")
             lines.append("")
 
@@ -244,7 +244,7 @@ def _generate_tests_logic(code: str, framework: str, count: int) -> dict:
             test_lines.append(f'    """Test {fn}."""')
             test_lines.append(f"    # TODO: implement test for {fn}")
             test_lines.append(f"    result = {fn}()")
-            test_lines.append(f"    assert result is not None")
+            test_lines.append("    assert result is not None")
             test_lines.append("")
 
     elif fw == "jest":
@@ -253,7 +253,7 @@ def _generate_tests_logic(code: str, framework: str, count: int) -> dict:
             test_lines.append(f"test('{fn} works correctly', () => {{")
             test_lines.append(f"  // TODO: implement test for {fn}")
             test_lines.append(f"  const result = {fn}();")
-            test_lines.append(f"  expect(result).toBeDefined();")
+            test_lines.append("  expect(result).toBeDefined();")
             test_lines.append("});")
             test_lines.append("")
 
@@ -267,7 +267,7 @@ def _generate_tests_logic(code: str, framework: str, count: int) -> dict:
             test_lines.append(f"    def test_{fn}(self):")
             test_lines.append(f'        """Test {fn}."""')
             test_lines.append(f"        # TODO: implement test for {fn}")
-            test_lines.append(f"        self.fail('Not implemented')")
+            test_lines.append("        self.fail('Not implemented')")
             test_lines.append("")
         test_lines.append("")
         test_lines.append("if __name__ == '__main__':")

@@ -1,8 +1,9 @@
 """negativa-score — Score ideas by negatives and downsides."""
-from mcp.server import Server
-import mcp.types as types
 import json
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("negativa-score")
 

@@ -1,17 +1,18 @@
 """Extended tests for ground-truth-mcp — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.ground_truth_mcp.server import (
+    _compare_outputs_logic,
     _store_ground_truth_logic,
     _token_overlap,
-    _validate_claim_logic,
-    _compare_outputs_logic,
     _truth_store,
+    _validate_claim_logic,
     handle_call_tool,
 )
 
@@ -89,7 +90,7 @@ class TestValidateClaimLogic:
 
     def test_verdict_supported(self):
         for i in range(5):
-            _store_ground_truth_logic(f"k{i}", f"python is a great programming language tool", f"src{i}")
+            _store_ground_truth_logic(f"k{i}", "python is a great programming language tool", f"src{i}")
         result = _validate_claim_logic("python programming language", [])
         # Multiple overlapping facts should push to supported
         assert result["confidence"] >= 0

@@ -1,16 +1,16 @@
 """Extended tests for phyloid-evolve — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
 import os
-import math
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.phyloid_evolve.server import (
-    _hamming_distance,
-    _evolve_population_logic,
     _compute_phylogeny_logic,
+    _evolve_population_logic,
+    _hamming_distance,
     _mutate_individual_logic,
     handle_call_tool,
 )

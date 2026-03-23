@@ -1,15 +1,16 @@
 """Extended tests for idea-killer-mcp — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.idea_killer_mcp.server import (
+    _find_fatal_flaws_logic,
     _kill_idea_logic,
     _stress_test_logic,
-    _find_fatal_flaws_logic,
     handle_call_tool,
 )
 

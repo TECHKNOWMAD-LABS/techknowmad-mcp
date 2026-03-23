@@ -1,17 +1,18 @@
 """Extended tests for graph-forge-mcp — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.graph_forge_mcp.server import (
-    _build_adjacency,
-    _create_graph_logic,
     _bfs_path,
-    _query_graph_logic,
+    _build_adjacency,
     _compute_centrality_logic,
+    _create_graph_logic,
+    _query_graph_logic,
     handle_call_tool,
 )
 

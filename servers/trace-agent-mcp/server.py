@@ -1,9 +1,10 @@
 """trace-agent-mcp — Trace agent execution paths."""
-from mcp.server import Server
-import mcp.types as types
 import json
 from datetime import datetime, timezone
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("trace-agent-mcp")
 

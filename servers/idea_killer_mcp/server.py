@@ -1,8 +1,9 @@
 """idea-killer-mcp — Systematically critique and kill bad ideas."""
-from mcp.server import Server
-import mcp.types as types
 import json
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("idea-killer-mcp")
 

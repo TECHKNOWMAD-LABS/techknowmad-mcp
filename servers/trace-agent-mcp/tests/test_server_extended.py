@@ -1,17 +1,18 @@
 """Extended tests for trace-agent-mcp — targeting 90%+ coverage."""
-import pytest
 import json
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.trace_agent_mcp.server import (
-    _start_trace_logic,
-    _log_step_logic,
     _get_trace_logic,
-    _traces,
+    _log_step_logic,
+    _start_trace_logic,
     _trace_meta,
+    _traces,
     handle_call_tool,
 )
 

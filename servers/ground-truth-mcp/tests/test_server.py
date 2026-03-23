@@ -1,12 +1,13 @@
 """Tests for ground-truth-mcp server."""
-import pytest
 import json
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
-from servers.ground_truth_mcp.server import handle_list_tools, handle_call_tool, _truth_store
+from servers.ground_truth_mcp.server import handle_call_tool, handle_list_tools
 
 
 @pytest.mark.asyncio

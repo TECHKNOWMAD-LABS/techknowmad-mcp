@@ -1,9 +1,10 @@
 """graph-forge-mcp — Forge knowledge graphs."""
-from mcp.server import Server
-import mcp.types as types
 import json
 from collections import deque
 from typing import Any
+
+import mcp.types as types
+from mcp.server import Server
 
 app = Server("graph-forge-mcp")
 
