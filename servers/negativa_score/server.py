@@ -31,13 +31,18 @@ _DIMENSION_EXPLANATIONS: dict[str, str] = {
 }
 
 
+_MAX_IDEA_LENGTH = 10_000  # guard against large-input DoS
+
+
 @lru_cache(maxsize=512)
 def _score_dimension(idea: str, dimension: str) -> tuple[int, str]:
     """Score an idea on a single dimension. Returns (score 0-10, explanation).
 
     Results are cached — repeated calls with identical (idea, dimension) pairs
     return instantly from cache (96x speedup measured in benchmark).
+    Input truncated to _MAX_IDEA_LENGTH characters to prevent DoS.
     """
+    idea = idea[:_MAX_IDEA_LENGTH]
     idea_lower = idea.lower()
     keywords = _RISK_KEYWORDS.get(dimension.lower(), [dimension.lower()])
     matches = [kw for kw in keywords if kw in idea_lower]

@@ -79,11 +79,16 @@ def _evolve_population_logic(population: list, generations: int, fitness_fn: str
     return {"population": pop, "generations_run": generations, "population_size": len(pop)}
 
 
+_MAX_SEQUENCES = 500  # O(n^2) pairwise distance — cap to prevent DoS
+
+
 def _compute_phylogeny_logic(sequences: list, method: str) -> dict:
     """Build a simple phylogenetic tree using hierarchical clustering."""
     if not sequences:
         return {"tree": {}, "method": method, "sequence_count": 0}
 
+    # Guard against O(n^2) DoS: truncate to _MAX_SEQUENCES
+    sequences = sequences[:_MAX_SEQUENCES]
     n = len(sequences)
     # Compute pairwise distances
     dist = {}
