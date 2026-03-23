@@ -22,6 +22,10 @@ def _hamming_distance(s1: str, s2: str) -> int:
 
 def _evolve_population_logic(population: list, generations: int, fitness_fn: str) -> dict:
     """Core evolution logic."""
+    if population is None:
+        population = []
+    if not fitness_fn:
+        fitness_fn = "mean"
     pop = [dict(ind) for ind in population]
 
     for gen in range(generations):
@@ -135,6 +139,10 @@ def _compute_phylogeny_logic(sequences: list, method: str) -> dict:
 
 def _mutate_individual_logic(individual: dict, mutation_rate: float) -> dict:
     """Mutate individual's genes by adding Gaussian noise."""
+    if individual is None:
+        individual = {"genes": [], "fitness": 0.0}
+    if mutation_rate is None or mutation_rate < 0:
+        mutation_rate = 0.0
     mutated = dict(individual)
     genes = list(individual.get("genes", []))
     mutated_genes = [g + random.gauss(0, mutation_rate) for g in genes]

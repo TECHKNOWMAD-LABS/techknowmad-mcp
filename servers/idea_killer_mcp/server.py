@@ -81,6 +81,10 @@ _DOMAIN_FLAWS = {
 
 def _kill_idea_logic(idea: str, mode: str) -> dict:
     """Generate killing arguments for an idea using the specified mode."""
+    if not idea:
+        idea = ""
+    if not mode:
+        mode = "skeptic"
     idea_lower = idea.lower()
 
     if mode == "devil":
@@ -110,6 +114,10 @@ def _kill_idea_logic(idea: str, mode: str) -> dict:
 
 def _stress_test_logic(idea: str, scenarios: list) -> dict:
     """Test idea against scenarios."""
+    if not idea:
+        idea = ""
+    if scenarios is None:
+        scenarios = []
     idea_lower = idea.lower()
     results = []
 
@@ -150,6 +158,10 @@ def _stress_test_logic(idea: str, scenarios: list) -> dict:
 
 def _find_fatal_flaws_logic(idea: str, domain: str) -> dict:
     """Find domain-specific fatal flaws."""
+    if not idea:
+        idea = ""
+    if not domain:
+        domain = "business"
     domain_lower = domain.lower()
     flaws_config = _DOMAIN_FLAWS.get(domain_lower, _DOMAIN_FLAWS["business"])
     idea_lower = idea.lower()

@@ -52,6 +52,10 @@ def _score_dimension(idea: str, dimension: str) -> tuple[int, str]:
 
 def _score_negatives_logic(idea: str, dimensions: list) -> dict:
     """Score idea across specified dimensions."""
+    if not idea:
+        idea = ""
+    if dimensions is None:
+        dimensions = []
     scores = {}
     for dim in dimensions:
         score, explanation = _score_dimension(idea, dim)
@@ -68,6 +72,10 @@ def _score_negatives_logic(idea: str, dimensions: list) -> dict:
 
 def _rank_by_downside_logic(ideas: list, dimension: str) -> list:
     """Rank ideas by downside on a single dimension, worst first."""
+    if ideas is None:
+        ideas = []
+    if not dimension:
+        dimension = "technical"
     scored = []
     for idea in ideas:
         score, explanation = _score_dimension(str(idea), dimension)
@@ -78,6 +86,8 @@ def _rank_by_downside_logic(ideas: list, dimension: str) -> list:
 
 def _compute_risk_profile_logic(idea: str) -> dict:
     """Compute comprehensive risk profile across standard categories."""
+    if not idea:
+        idea = ""
     categories = ["technical", "market", "regulatory", "execution", "financial"]
     profile = {}
     for cat in categories:
