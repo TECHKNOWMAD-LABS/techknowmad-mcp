@@ -5,9 +5,20 @@ build-backend = "hatchling.build"
 [project]
 name = "techknowmad-mcp"
 version = "0.1.0"
-description = "TechKnowmad MCP Server Monorepo"
+description = "TechKnowmad MCP Server Monorepo — 8 autonomous development cycles by Edgecraft Protocol"
+authors = [
+    {name = "TechKnowMad Labs", email = "admin@techknowmad.ai"},
+]
 license = {text = "MIT"}
+readme = "README.md"
 requires-python = ">=3.12"
+keywords = ["mcp", "ai", "agents", "edgecraft", "benchmark", "knowledge-graph", "evolution"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
     "mcp>=1.0.0",
     "pytest>=8.0.0",
