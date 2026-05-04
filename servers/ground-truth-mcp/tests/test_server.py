@@ -1,4 +1,5 @@
 """Tests for ground-truth-mcp server."""
+
 import json
 import os
 import sys

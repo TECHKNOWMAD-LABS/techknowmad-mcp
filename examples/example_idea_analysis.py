@@ -42,8 +42,14 @@ def main() -> None:
     print("1. Adversarial critique:")
     for mode in MODES:
         result = _kill_idea_logic(IDEA, mode)
-        top_arg = result["killing_arguments"][0]["argument"] if result["killing_arguments"] else "N/A"
-        print(f"   [{mode.upper():8s}] severity={result['max_severity']:>2}/10 | {top_arg[:70]}")
+        top_arg = (
+            result["killing_arguments"][0]["argument"]
+            if result["killing_arguments"]
+            else "N/A"
+        )
+        print(
+            f"   [{mode.upper():8s}] severity={result['max_severity']:>2}/10 | {top_arg[:70]}"
+        )
     print()
 
     # 2. Stress test against scenarios
@@ -59,16 +65,22 @@ def main() -> None:
     for domain in ["tech", "business", "social"]:
         flaws = _find_fatal_flaws_logic(IDEA, domain)
         top_flaw = flaws["fatal_flaws"][0]["flaw"] if flaws["fatal_flaws"] else "N/A"
-        print(f"   [{domain.upper():10s}] max_impact={flaws['max_impact']:>2}/10 | {top_flaw[:60]}")
+        print(
+            f"   [{domain.upper():10s}] max_impact={flaws['max_impact']:>2}/10 | {top_flaw[:60]}"
+        )
     print()
 
     # 4. Risk profile
     print("4. Quantitative risk profile:")
     profile = _compute_risk_profile_logic(IDEA)
-    for cat, data in sorted(profile["risk_profile"].items(), key=lambda x: x[1]["score"], reverse=True):
+    for cat, data in sorted(
+        profile["risk_profile"].items(), key=lambda x: x[1]["score"], reverse=True
+    ):
         bar = "#" * data["score"]
         print(f"   {cat:12s} [{bar:<10}] {data['score']:>2}/10")
-    print(f"   Overall: {profile['overall_risk']} (avg {profile['average_risk_score']:.1f}/10)\n")
+    print(
+        f"   Overall: {profile['overall_risk']} (avg {profile['average_risk_score']:.1f}/10)\n"
+    )
 
     # 5. Targeted negative scoring
     print("5. Negativa scores:")

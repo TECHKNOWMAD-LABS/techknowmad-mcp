@@ -1,8 +1,9 @@
 """Property-based tests for phyloid-evolve using Hypothesis."""
+
 import sys
 import os
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
@@ -13,11 +14,17 @@ from servers.phyloid_evolve.server import (
     _mutate_individual_logic,
 )
 
-gene_st = st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False)
-individual_st = st.fixed_dictionaries({
-    "fitness": st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-    "genes": st.lists(gene_st, min_size=1, max_size=10),
-})
+gene_st = st.floats(
+    min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False
+)
+individual_st = st.fixed_dictionaries(
+    {
+        "fitness": st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
+        "genes": st.lists(gene_st, min_size=1, max_size=10),
+    }
+)
 
 
 class TestHammingDistanceProperties:
@@ -66,7 +73,9 @@ class TestEvolutionProperties:
 
     @given(
         individual=individual_st,
-        mutation_rate=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        mutation_rate=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_mutation_preserves_gene_count(self, individual, mutation_rate):
         """Mutation always preserves the number of genes."""

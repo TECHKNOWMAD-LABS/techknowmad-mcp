@@ -1,4 +1,5 @@
 """phyloid-evolve — Evolutionary and phylogenetic tree operations."""
+
 import json
 import random
 from typing import Any
@@ -19,7 +20,9 @@ def _hamming_distance(s1: str, s2: str) -> int:
     return sum(c1 != c2 for c1, c2 in zip(s1, s2))
 
 
-def _evolve_population_logic(population: list, generations: int, fitness_fn: str) -> dict:
+def _evolve_population_logic(
+    population: list, generations: int, fitness_fn: str
+) -> dict:
     """Core evolution logic."""
     if population is None:
         population = []
@@ -75,7 +78,11 @@ def _evolve_population_logic(population: list, generations: int, fitness_fn: str
             else:
                 ind["fitness"] = sum(genes) / len(genes) if genes else 0.0
 
-    return {"population": pop, "generations_run": generations, "population_size": len(pop)}
+    return {
+        "population": pop,
+        "generations_run": generations,
+        "population_size": len(pop),
+    }
 
 
 _MAX_SEQUENCES = 500  # O(n^2) pairwise distance — cap to prevent DoS
@@ -223,7 +230,9 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "evolve_population":
         result = _evolve_population_logic(
             arguments["population"],

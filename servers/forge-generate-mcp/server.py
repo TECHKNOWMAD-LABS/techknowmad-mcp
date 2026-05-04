@@ -1,4 +1,5 @@
 """forge-generate-mcp — Generate code and artifacts."""
+
 import json
 import re
 from typing import Any
@@ -12,8 +13,32 @@ app = Server("forge-generate-mcp")
 def _extract_identifiers(spec: str) -> tuple[list[str], list[str]]:
     """Extract potential function and class names from a spec."""
     # Class signals: words after "class", capitalized, or ending in er/or/ion/Manager/Service
-    class_signals = {"class", "service", "manager", "handler", "processor", "controller", "model"}
-    func_signals = {"function", "method", "def", "calculate", "compute", "process", "get", "set", "create", "update", "delete", "fetch", "parse", "validate", "transform"}
+    class_signals = {
+        "class",
+        "service",
+        "manager",
+        "handler",
+        "processor",
+        "controller",
+        "model",
+    }
+    func_signals = {
+        "function",
+        "method",
+        "def",
+        "calculate",
+        "compute",
+        "process",
+        "get",
+        "set",
+        "create",
+        "update",
+        "delete",
+        "fetch",
+        "parse",
+        "validate",
+        "transform",
+    }
 
     classes = []
     functions = []
@@ -134,13 +159,33 @@ def _generate_schema_logic(data_description: str, format: str) -> dict:
 
     # Type inference heuristics
     type_keywords = {
-        "id": "string", "uuid": "string", "name": "string", "title": "string",
-        "description": "string", "email": "string", "url": "string",
-        "count": "integer", "number": "integer", "age": "integer", "quantity": "integer",
-        "price": "number", "amount": "number", "score": "number", "rate": "number",
-        "active": "boolean", "enabled": "boolean", "flag": "boolean", "is_": "boolean",
-        "date": "string", "timestamp": "string", "created": "string", "updated": "string",
-        "list": "array", "items": "array", "tags": "array", "children": "array",
+        "id": "string",
+        "uuid": "string",
+        "name": "string",
+        "title": "string",
+        "description": "string",
+        "email": "string",
+        "url": "string",
+        "count": "integer",
+        "number": "integer",
+        "age": "integer",
+        "quantity": "integer",
+        "price": "number",
+        "amount": "number",
+        "score": "number",
+        "rate": "number",
+        "active": "boolean",
+        "enabled": "boolean",
+        "flag": "boolean",
+        "is_": "boolean",
+        "date": "string",
+        "timestamp": "string",
+        "created": "string",
+        "updated": "string",
+        "list": "array",
+        "items": "array",
+        "tags": "array",
+        "children": "array",
     }
 
     for word in words:
@@ -165,9 +210,7 @@ def _generate_schema_logic(data_description: str, format: str) -> dict:
         schema_obj = {
             "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
-            "properties": {
-                name: {"type": typ} for name, typ in fields.items()
-            },
+            "properties": {name: {"type": typ} for name, typ in fields.items()},
             "required": list(fields.keys()),
         }
         schema_str = json.dumps(schema_obj, indent=2)
@@ -177,7 +220,13 @@ def _generate_schema_logic(data_description: str, format: str) -> dict:
         schema_lines.append("from typing import Optional, List")
         schema_lines.append("")
 
-        type_map = {"string": "str", "integer": "int", "number": "float", "boolean": "bool", "array": "List[str]"}
+        type_map = {
+            "string": "str",
+            "integer": "int",
+            "number": "float",
+            "boolean": "bool",
+            "array": "List[str]",
+        }
         schema_lines.append("class GeneratedModel(BaseModel):")
         if fields:
             for name, typ in fields.items():
@@ -188,7 +237,13 @@ def _generate_schema_logic(data_description: str, format: str) -> dict:
         schema_str = "\n".join(schema_lines)
 
     elif fmt == "typescript":
-        type_map = {"string": "string", "integer": "number", "number": "number", "boolean": "boolean", "array": "string[]"}
+        type_map = {
+            "string": "string",
+            "integer": "number",
+            "number": "number",
+            "boolean": "boolean",
+            "array": "string[]",
+        }
         schema_lines.append("interface GeneratedSchema {")
         for name, typ in fields.items():
             ts_type = type_map.get(typ, "string")
@@ -227,7 +282,11 @@ def _generate_tests_logic(code: str, framework: str, count: int) -> dict:
             function_names.append(m)
 
     # Remove test functions and private functions from stubs
-    function_names = [f for f in function_names if not f.startswith("test_") and not f.startswith("__")][:count]
+    function_names = [
+        f
+        for f in function_names
+        if not f.startswith("test_") and not f.startswith("__")
+    ][:count]
 
     if not function_names:
         function_names = ["generated_function"]
@@ -295,9 +354,18 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "spec": {"type": "string", "description": "Natural language description of what to generate"},
-                    "language": {"type": "string", "description": "Target language: python, javascript, typescript, go, rust"},
-                    "style": {"type": "string", "description": "Code style: functional, class-based, minimal"},
+                    "spec": {
+                        "type": "string",
+                        "description": "Natural language description of what to generate",
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "Target language: python, javascript, typescript, go, rust",
+                    },
+                    "style": {
+                        "type": "string",
+                        "description": "Code style: functional, class-based, minimal",
+                    },
                 },
                 "required": ["spec", "language", "style"],
             },
@@ -308,8 +376,14 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "data_description": {"type": "string", "description": "Description of the data structure"},
-                    "format": {"type": "string", "description": "Schema format: json-schema, pydantic, typescript"},
+                    "data_description": {
+                        "type": "string",
+                        "description": "Description of the data structure",
+                    },
+                    "format": {
+                        "type": "string",
+                        "description": "Schema format: json-schema, pydantic, typescript",
+                    },
                 },
                 "required": ["data_description", "format"],
             },
@@ -320,9 +394,18 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "code": {"type": "string", "description": "Source code to generate tests for"},
-                    "framework": {"type": "string", "description": "Test framework: pytest, jest, unittest"},
-                    "count": {"type": "integer", "description": "Maximum number of test stubs to generate"},
+                    "code": {
+                        "type": "string",
+                        "description": "Source code to generate tests for",
+                    },
+                    "framework": {
+                        "type": "string",
+                        "description": "Test framework: pytest, jest, unittest",
+                    },
+                    "count": {
+                        "type": "integer",
+                        "description": "Maximum number of test stubs to generate",
+                    },
                 },
                 "required": ["code", "framework", "count"],
             },
@@ -331,14 +414,22 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "generate_code":
-        result = _generate_code_logic(arguments["spec"], arguments["language"], arguments["style"])
+        result = _generate_code_logic(
+            arguments["spec"], arguments["language"], arguments["style"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     elif name == "generate_schema":
-        result = _generate_schema_logic(arguments["data_description"], arguments["format"])
+        result = _generate_schema_logic(
+            arguments["data_description"], arguments["format"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     elif name == "generate_tests":
-        result = _generate_tests_logic(arguments["code"], arguments["framework"], arguments["count"])
+        result = _generate_tests_logic(
+            arguments["code"], arguments["framework"], arguments["count"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     raise ValueError(f"Unknown tool: {name}")

@@ -1,4 +1,5 @@
 """Extended tests for forge-generate-mcp — targeting 90%+ coverage."""
+
 import json
 import os
 import sys
@@ -37,17 +38,23 @@ class TestExtractIdentifiers:
 
 class TestGenerateCodeLogic:
     def test_python_functional(self):
-        result = _generate_code_logic("calculate and validate data", "python", "functional")
+        result = _generate_code_logic(
+            "calculate and validate data", "python", "functional"
+        )
         assert result["language"] == "python"
         assert "def " in result["code"]
         assert result["style"] == "functional"
 
     def test_python_class_based(self):
-        result = _generate_code_logic("service manager for processing data", "python", "class-based")
+        result = _generate_code_logic(
+            "service manager for processing data", "python", "class-based"
+        )
         assert "class " in result["code"]
 
     def test_javascript_functional(self):
-        result = _generate_code_logic("process and get data", "javascript", "functional")
+        result = _generate_code_logic(
+            "process and get data", "javascript", "functional"
+        )
         assert "function " in result["code"]
 
     def test_javascript_class_based(self):
@@ -102,7 +109,9 @@ class TestGenerateSchemaLogic:
         assert "class GeneratedModel" in result["schema"]
 
     def test_typescript_format(self):
-        result = _generate_schema_logic("entity with id name and active flag", "typescript")
+        result = _generate_schema_logic(
+            "entity with id name and active flag", "typescript"
+        )
         assert "interface GeneratedSchema" in result["schema"]
 
     def test_unknown_format_fallback(self):
@@ -110,11 +119,15 @@ class TestGenerateSchemaLogic:
         assert "type" in result["schema"]
 
     def test_fields_detected(self):
-        result = _generate_schema_logic("user with name email age and active", "json-schema")
+        result = _generate_schema_logic(
+            "user with name email age and active", "json-schema"
+        )
         assert len(result["fields_detected"]) > 0
 
     def test_type_inference_integer(self):
-        result = _generate_schema_logic("item with count quantity and age", "json-schema")
+        result = _generate_schema_logic(
+            "item with count quantity and age", "json-schema"
+        )
         schema = json.loads(result["schema"])
         props = schema["properties"]
         # At least one integer field detected
@@ -202,7 +215,11 @@ class TestHandleCallToolMCP:
     async def test_generate_code_python(self):
         result = await handle_call_tool(
             "generate_code",
-            {"spec": "calculate sum of list", "language": "python", "style": "functional"},
+            {
+                "spec": "calculate sum of list",
+                "language": "python",
+                "style": "functional",
+            },
         )
         data = json.loads(result[0].text)
         assert data["language"] == "python"

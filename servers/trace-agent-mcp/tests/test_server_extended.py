@@ -1,4 +1,5 @@
 """Extended tests for trace-agent-mcp — targeting 90%+ coverage."""
+
 import json
 import os
 import sys
@@ -51,6 +52,7 @@ class TestStartTraceLogic:
     def test_timestamp_is_iso_format(self):
         result = _start_trace_logic("trace-ts", "agent")
         from datetime import datetime
+
         # Should parse without error
         datetime.fromisoformat(result["started_at"])
 
@@ -120,8 +122,14 @@ class TestGetTraceLogic:
         assert "timestamp" in result["steps"][0]
 
     def test_corrupted_timestamp_handled(self):
-        _traces["bad-trace"] = [{"index": 0, "step": "x", "data": {}, "timestamp": "not-a-date"}]
-        _trace_meta["bad-trace"] = {"agent_name": "a", "started_at": "also-bad", "trace_id": "bad-trace"}
+        _traces["bad-trace"] = [
+            {"index": 0, "step": "x", "data": {}, "timestamp": "not-a-date"}
+        ]
+        _trace_meta["bad-trace"] = {
+            "agent_name": "a",
+            "started_at": "also-bad",
+            "trace_id": "bad-trace",
+        }
         result = _get_trace_logic("bad-trace")
         # Should not raise, duration_ms can be None
         assert result["total_steps"] == 1
@@ -132,12 +140,17 @@ class TestGetTraceLogic:
 class TestHandleCallToolMCP:
     async def test_full_workflow_via_mcp(self):
         # Start trace
-        r1 = await handle_call_tool("start_trace", {"trace_id": "mcp-1", "agent_name": "test-bot"})
+        r1 = await handle_call_tool(
+            "start_trace", {"trace_id": "mcp-1", "agent_name": "test-bot"}
+        )
         d1 = json.loads(r1[0].text)
         assert d1["status"] == "initialized"
 
         # Log steps
-        r2 = await handle_call_tool("log_step", {"trace_id": "mcp-1", "step": "action-A", "data": {"result": 42}})
+        r2 = await handle_call_tool(
+            "log_step",
+            {"trace_id": "mcp-1", "step": "action-A", "data": {"result": 42}},
+        )
         d2 = json.loads(r2[0].text)
         assert d2["step_index"] == 0
 

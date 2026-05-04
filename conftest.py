@@ -1,7 +1,8 @@
 """Shared fixtures and mock helpers for the techknowmad-mcp test suite."""
+
 import pytest
 import json
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock
 
 
 @pytest.fixture

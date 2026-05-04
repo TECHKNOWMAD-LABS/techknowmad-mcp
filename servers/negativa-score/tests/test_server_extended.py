@@ -1,4 +1,5 @@
 """Extended tests for negativa-score — targeting 90%+ coverage."""
+
 import json
 import os
 import sys
@@ -18,7 +19,9 @@ from servers.negativa_score.server import (
 
 class TestScoreDimension:
     def test_technical_with_keywords(self):
-        score, explanation = _score_dimension("A complex legacy system with scalability issues", "technical")
+        score, explanation = _score_dimension(
+            "A complex legacy system with scalability issues", "technical"
+        )
         assert score > 0
         assert "technical" in explanation
 
@@ -28,31 +31,45 @@ class TestScoreDimension:
         assert "No strong negative signals" in explanation
 
     def test_market_keywords_detected(self):
-        score, explanation = _score_dimension("A saturated commodity market with price war competition", "market")
+        score, explanation = _score_dimension(
+            "A saturated commodity market with price war competition", "market"
+        )
         assert score > 0
 
     def test_regulatory_keywords_detected(self):
-        score, explanation = _score_dimension("A healthcare AI platform subject to GDPR and FDA compliance", "regulatory")
+        score, explanation = _score_dimension(
+            "A healthcare AI platform subject to GDPR and FDA compliance", "regulatory"
+        )
         assert score > 0
 
     def test_execution_keywords_detected(self):
-        score, explanation = _score_dimension("Team faces skill gap and high turnover with tight deadline", "execution")
+        score, explanation = _score_dimension(
+            "Team faces skill gap and high turnover with tight deadline", "execution"
+        )
         assert score > 0
 
     def test_financial_keywords_detected(self):
-        score, explanation = _score_dimension("High burn rate with limited runway and expensive operations", "financial")
+        score, explanation = _score_dimension(
+            "High burn rate with limited runway and expensive operations", "financial"
+        )
         assert score > 0
 
     def test_social_keywords_detected(self):
-        score, explanation = _score_dimension("Algorithm shows bias and raises privacy concerns", "social")
+        score, explanation = _score_dimension(
+            "Algorithm shows bias and raises privacy concerns", "social"
+        )
         assert score > 0
 
     def test_strategic_keywords_detected(self):
-        score, explanation = _score_dimension("Overextended strategy with competitor focus dilution", "strategic")
+        score, explanation = _score_dimension(
+            "Overextended strategy with competitor focus dilution", "strategic"
+        )
         assert score > 0
 
     def test_operational_keywords_detected(self):
-        score, explanation = _score_dimension("Manual bottleneck creates single point of failure", "operational")
+        score, explanation = _score_dimension(
+            "Manual bottleneck creates single point of failure", "operational"
+        )
         assert score > 0
 
     def test_score_capped_at_10(self):
@@ -75,19 +92,31 @@ class TestScoreDimension:
     def test_key_signals_in_explanation(self):
         _, explanation = _score_dimension("complex legacy system", "technical")
         # When keywords detected, they appear in explanation
-        assert "complex" in explanation or "legacy" in explanation or "No strong" in explanation
+        assert (
+            "complex" in explanation
+            or "legacy" in explanation
+            or "No strong" in explanation
+        )
 
 
 class TestScoreNegativesLogic:
     def test_single_dimension(self):
         result = _score_negatives_logic("A complex technical system", ["technical"])
         assert "technical" in result["dimension_scores"]
-        assert result["average_downside"] == result["dimension_scores"]["technical"]["score"]
+        assert (
+            result["average_downside"]
+            == result["dimension_scores"]["technical"]["score"]
+        )
 
     def test_multiple_dimensions(self):
-        result = _score_negatives_logic("A complex expensive regulatory-heavy platform", ["technical", "financial", "regulatory"])
+        result = _score_negatives_logic(
+            "A complex expensive regulatory-heavy platform",
+            ["technical", "financial", "regulatory"],
+        )
         assert len(result["dimension_scores"]) == 3
-        assert result["total_downside"] == sum(v["score"] for v in result["dimension_scores"].values())
+        assert result["total_downside"] == sum(
+            v["score"] for v in result["dimension_scores"].values()
+        )
 
     def test_empty_dimensions(self):
         result = _score_negatives_logic("some idea", [])
@@ -179,7 +208,11 @@ class TestHandleCallToolMCP:
         result = await handle_call_tool(
             "rank_by_downside",
             {
-                "ideas": ["complex technical system", "simple product", "expensive financial risk"],
+                "ideas": [
+                    "complex technical system",
+                    "simple product",
+                    "expensive financial risk",
+                ],
                 "dimension": "financial",
             },
         )
@@ -190,7 +223,10 @@ class TestHandleCallToolMCP:
     async def test_score_negatives_via_mcp(self):
         result = await handle_call_tool(
             "score_negatives",
-            {"idea": "A complex scalable technical platform", "dimensions": ["technical", "market"]},
+            {
+                "idea": "A complex scalable technical platform",
+                "dimensions": ["technical", "market"],
+            },
         )
         data = json.loads(result[0].text)
         assert "technical" in data["dimension_scores"]

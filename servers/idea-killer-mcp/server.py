@@ -1,4 +1,5 @@
 """idea-killer-mcp — Systematically critique and kill bad ideas."""
+
 import json
 from typing import Any
 
@@ -26,8 +27,14 @@ _SKEPTIC_ARGUMENTS = [
 _MARKET_ARGUMENTS = [
     ("The addressable market is too small to justify venture-scale investment.", 8),
     ("Incumbents with distribution advantages can replicate this in 6 months.", 9),
-    ("Market timing is off — adoption requires behavior change that takes 5+ years.", 7),
-    ("Pricing model conflicts with how buyers in this segment are accustomed to pay.", 6),
+    (
+        "Market timing is off — adoption requires behavior change that takes 5+ years.",
+        7,
+    ),
+    (
+        "Pricing model conflicts with how buyers in this segment are accustomed to pay.",
+        6,
+    ),
     ("Network effects require critical mass that cannot be bootstrapped.", 8),
 ]
 
@@ -63,7 +70,10 @@ _DOMAIN_FLAWS = {
         ("No defensible moat — competitive advantage erodes immediately.", 9),
         ("Unit economics don't work at current pricing — negative gross margin.", 10),
         ("Customer acquisition cost exceeds lifetime value in the model.", 9),
-        ("Revenue model requires behavior change that historically has low adoption.", 7),
+        (
+            "Revenue model requires behavior change that historically has low adoption.",
+            7,
+        ),
     ],
     "social": [
         ("Data collection practices raise significant privacy concerns.", 8),
@@ -95,9 +105,13 @@ def _kill_idea_logic(idea: str, mode: str) -> dict:
 
     arguments = []
     for template, severity in base_args[:3]:
-        arg_text = template.replace("{company}", "Fortune 500").replace("{idea}", idea[:50])
+        arg_text = template.replace("{company}", "Fortune 500").replace(
+            "{idea}", idea[:50]
+        )
         # Boost severity if idea keywords overlap with risk signals
-        if any(w in idea_lower for w in ["new", "innovative", "disrupt", "revolutionary"]):
+        if any(
+            w in idea_lower for w in ["new", "innovative", "disrupt", "revolutionary"]
+        ):
             severity = min(10, severity + 1)
         arguments.append({"argument": arg_text, "severity": severity, "mode": mode})
 
@@ -130,13 +144,19 @@ def _stress_test_logic(idea: str, scenarios: list) -> dict:
         else:
             # Generic evaluation
             passes = len(idea.split()) > 10
-            reasoning = "Insufficient specificity to fully evaluate this scenario." if not passes else "Idea has enough detail to likely adapt to this scenario."
+            reasoning = (
+                "Insufficient specificity to fully evaluate this scenario."
+                if not passes
+                else "Idea has enough detail to likely adapt to this scenario."
+            )
 
-        results.append({
-            "scenario": scenario,
-            "result": "PASS" if passes else "FAIL",
-            "reasoning": reasoning,
-        })
+        results.append(
+            {
+                "scenario": scenario,
+                "result": "PASS" if passes else "FAIL",
+                "reasoning": reasoning,
+            }
+        )
 
     passed = sum(1 for r in results if r["result"] == "PASS")
     resilience = round((passed / len(results)) * 100) if results else 0
@@ -181,7 +201,10 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "idea": {"type": "string", "description": "The idea to critique"},
-                    "mode": {"type": "string", "description": "Critique mode: 'devil', 'skeptic', or 'market'"},
+                    "mode": {
+                        "type": "string",
+                        "description": "Critique mode: 'devil', 'skeptic', or 'market'",
+                    },
                 },
                 "required": ["idea", "mode"],
             },
@@ -192,8 +215,14 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "idea": {"type": "string", "description": "The idea to stress test"},
-                    "scenarios": {"type": "array", "description": "List of scenario strings to test against"},
+                    "idea": {
+                        "type": "string",
+                        "description": "The idea to stress test",
+                    },
+                    "scenarios": {
+                        "type": "array",
+                        "description": "List of scenario strings to test against",
+                    },
                 },
                 "required": ["idea", "scenarios"],
             },
@@ -205,7 +234,10 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "idea": {"type": "string", "description": "The idea to analyze"},
-                    "domain": {"type": "string", "description": "Domain: 'tech', 'business', 'social', or 'scientific'"},
+                    "domain": {
+                        "type": "string",
+                        "description": "Domain: 'tech', 'business', 'social', or 'scientific'",
+                    },
                 },
                 "required": ["idea", "domain"],
             },
@@ -214,7 +246,9 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "kill_idea":
         result = _kill_idea_logic(arguments["idea"], arguments["mode"])
         return [types.TextContent(type="text", text=json.dumps(result))]

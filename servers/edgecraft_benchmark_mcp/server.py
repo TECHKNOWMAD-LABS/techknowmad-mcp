@@ -1,4 +1,5 @@
 """edgecraft-benchmark-mcp — Benchmark edge cases."""
+
 import json
 from typing import Any
 
@@ -17,7 +18,7 @@ _EDGE_CASES: dict[str, list[dict]] = {
         {"value": -9223372036854775808, "description": "int64 min"},
         {"value": 9223372036854775807, "description": "int64 max"},
         {"value": 2**31, "description": "int32 overflow"},
-        {"value": -2**31 - 1, "description": "int32 underflow"},
+        {"value": -(2**31) - 1, "description": "int32 underflow"},
     ],
     "string": [
         {"value": "", "description": "empty string"},
@@ -26,7 +27,10 @@ _EDGE_CASES: dict[str, list[dict]] = {
         {"value": "a" * 1000, "description": "very long string (1000 chars)"},
         {"value": "a" * 65536, "description": "extremely long string (64KB)"},
         {"value": "'; DROP TABLE users; --", "description": "SQL injection attempt"},
-        {"value": "<script>alert('xss')</script>", "description": "XSS injection attempt"},
+        {
+            "value": "<script>alert('xss')</script>",
+            "description": "XSS injection attempt",
+        },
         {"value": "null", "description": "null as string"},
         {"value": "undefined", "description": "undefined as string"},
         {"value": "\\x00\\x01\\x02", "description": "control characters"},
@@ -49,9 +53,9 @@ _EDGE_CASES: dict[str, list[dict]] = {
         {"value": float("nan"), "description": "NaN (not a number)"},
         {"value": float("inf"), "description": "positive infinity"},
         {"value": float("-inf"), "description": "negative infinity"},
-        {"value": 1.7976931348623157e+308, "description": "float64 max"},
+        {"value": 1.7976931348623157e308, "description": "float64 max"},
         {"value": 5e-324, "description": "float64 min positive"},
-        {"value": -1.7976931348623157e+308, "description": "float64 min negative"},
+        {"value": -1.7976931348623157e308, "description": "float64 min negative"},
         {"value": 1e-15, "description": "very small positive float"},
     ],
 }
@@ -84,11 +88,31 @@ def _generate_edge_cases_logic(input_type: str, constraints: dict) -> dict:
     # Add constraint boundary cases for integers
     if type_lower == "integer":
         if "min" in constraints:
-            filtered_cases.append({"value": constraints["min"], "description": f"constraint min ({constraints['min']})"})
-            filtered_cases.append({"value": constraints["min"] - 1, "description": "just below constraint min"})
+            filtered_cases.append(
+                {
+                    "value": constraints["min"],
+                    "description": f"constraint min ({constraints['min']})",
+                }
+            )
+            filtered_cases.append(
+                {
+                    "value": constraints["min"] - 1,
+                    "description": "just below constraint min",
+                }
+            )
         if "max" in constraints:
-            filtered_cases.append({"value": constraints["max"], "description": f"constraint max ({constraints['max']})"})
-            filtered_cases.append({"value": constraints["max"] + 1, "description": "just above constraint max"})
+            filtered_cases.append(
+                {
+                    "value": constraints["max"],
+                    "description": f"constraint max ({constraints['max']})",
+                }
+            )
+            filtered_cases.append(
+                {
+                    "value": constraints["max"] + 1,
+                    "description": "just above constraint max",
+                }
+            )
 
     return {
         "input_type": input_type,
@@ -294,14 +318,22 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "generate_edge_cases":
-        result = _generate_edge_cases_logic(arguments["input_type"], arguments["constraints"])
+        result = _generate_edge_cases_logic(
+            arguments["input_type"], arguments["constraints"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     elif name == "run_benchmark":
-        result = _run_benchmark_logic(arguments["function_spec"], arguments["test_cases"])
+        result = _run_benchmark_logic(
+            arguments["function_spec"], arguments["test_cases"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     elif name == "compare_benchmarks":
-        result = _compare_benchmarks_logic(arguments["benchmark_a"], arguments["benchmark_b"])
+        result = _compare_benchmarks_logic(
+            arguments["benchmark_a"], arguments["benchmark_b"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     raise ValueError(f"Unknown tool: {name}")

@@ -1,8 +1,9 @@
 """Property-based tests for graph-forge-mcp using Hypothesis."""
+
 import sys
 import os
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
@@ -12,7 +13,9 @@ from servers.graph_forge_mcp.server import (
     _query_graph_logic,
 )
 
-node_id_st = st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", min_size=1, max_size=5)
+node_id_st = st.text(
+    alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", min_size=1, max_size=5
+)
 
 
 def _make_nodes(ids):
