@@ -1,4 +1,5 @@
 """Tests for negativa-score server."""
+
 import json
 import os
 import sys
@@ -41,7 +42,9 @@ async def test_score_negatives():
 async def test_compute_risk_profile():
     result = await handle_call_tool(
         "compute_risk_profile",
-        {"idea": "Launch expensive regulated fintech startup with complex compliance requirements"},
+        {
+            "idea": "Launch expensive regulated fintech startup with complex compliance requirements"
+        },
     )
     assert len(result) == 1
     data = json.loads(result[0].text)

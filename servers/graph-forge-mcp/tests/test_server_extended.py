@@ -1,4 +1,5 @@
 """Extended tests for graph-forge-mcp — targeting 90%+ coverage."""
+
 import json
 import os
 import sys
@@ -71,7 +72,8 @@ class TestCreateGraphLogic:
         nodes = [{"id": str(i)} for i in range(4)]
         edges = [
             {"source": str(i), "target": str(j), "weight": 1.0}
-            for i in range(4) for j in range(i + 1, 4)
+            for i in range(4)
+            for j in range(i + 1, 4)
         ]
         result = _create_graph_logic(nodes, edges, "complete")
         assert result["density"] == 1.0

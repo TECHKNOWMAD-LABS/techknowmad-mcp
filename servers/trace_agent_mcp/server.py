@@ -1,4 +1,5 @@
 """trace-agent-mcp — Trace agent execution paths."""
+
 import json
 from datetime import datetime, timezone
 from typing import Any
@@ -112,8 +113,14 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "trace_id": {"type": "string", "description": "Unique identifier for this trace"},
-                    "agent_name": {"type": "string", "description": "Name of the agent being traced"},
+                    "trace_id": {
+                        "type": "string",
+                        "description": "Unique identifier for this trace",
+                    },
+                    "agent_name": {
+                        "type": "string",
+                        "description": "Name of the agent being traced",
+                    },
                 },
                 "required": ["trace_id", "agent_name"],
             },
@@ -125,8 +132,14 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "trace_id": {"type": "string", "description": "Trace to append to"},
-                    "step": {"type": "string", "description": "Description of the step taken"},
-                    "data": {"type": "object", "description": "Arbitrary metadata for this step"},
+                    "step": {
+                        "type": "string",
+                        "description": "Description of the step taken",
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Arbitrary metadata for this step",
+                    },
                 },
                 "required": ["trace_id", "step", "data"],
             },
@@ -137,7 +150,10 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "trace_id": {"type": "string", "description": "Trace ID to retrieve"},
+                    "trace_id": {
+                        "type": "string",
+                        "description": "Trace ID to retrieve",
+                    },
                 },
                 "required": ["trace_id"],
             },
@@ -146,12 +162,16 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "start_trace":
         result = _start_trace_logic(arguments["trace_id"], arguments["agent_name"])
         return [types.TextContent(type="text", text=json.dumps(result))]
     elif name == "log_step":
-        result = _log_step_logic(arguments["trace_id"], arguments["step"], arguments["data"])
+        result = _log_step_logic(
+            arguments["trace_id"], arguments["step"], arguments["data"]
+        )
         return [types.TextContent(type="text", text=json.dumps(result))]
     elif name == "get_trace":
         result = _get_trace_logic(arguments["trace_id"])

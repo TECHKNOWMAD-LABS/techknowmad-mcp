@@ -1,4 +1,5 @@
 """graph-forge-mcp — Forge knowledge graphs."""
+
 import json
 from collections import deque
 from typing import Any
@@ -99,20 +100,27 @@ def _query_graph_logic(graph_data: dict, query: str) -> dict:
     query_lower = query.lower()
 
     if query_lower.startswith("neighbors:"):
-        node_id = query[len("neighbors:"):]
-        neighbors = [nb["node"] if isinstance(nb, dict) else nb for nb in adj.get(node_id, [])]
+        node_id = query[len("neighbors:") :]
+        neighbors = [
+            nb["node"] if isinstance(nb, dict) else nb for nb in adj.get(node_id, [])
+        ]
         return {"query": query, "result": neighbors, "count": len(neighbors)}
 
     elif query_lower.startswith("path:"):
-        parts = query[len("path:"):].split(":", 1)
+        parts = query[len("path:") :].split(":", 1)
         if len(parts) == 2:
             src, dst = parts
             path = _bfs_path(adj, src, dst)
-            return {"query": query, "result": path, "length": len(path) - 1 if path else None, "found": path is not None}
+            return {
+                "query": query,
+                "result": path,
+                "length": len(path) - 1 if path else None,
+                "found": path is not None,
+            }
         return {"query": query, "error": "Invalid path query format, use path:src:dst"}
 
     elif query_lower.startswith("degree:"):
-        node_id = query[len("degree:"):]
+        node_id = query[len("degree:") :]
         degree = len(adj.get(node_id, []))
         return {"query": query, "result": degree, "node": node_id}
 
@@ -156,7 +164,11 @@ def _compute_centrality_logic(graph_data: dict, metric: str) -> dict:
             scores[node_id] = float(len(adj[node_id]))
 
     sorted_scores = dict(sorted(scores.items(), key=lambda x: x[1], reverse=True))
-    return {"metric": metric, "centrality": sorted_scores, "node_count": len(sorted_scores)}
+    return {
+        "metric": metric,
+        "centrality": sorted_scores,
+        "node_count": len(sorted_scores),
+    }
 
 
 @app.list_tools()
@@ -221,7 +233,9 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "create_graph":
         result = _create_graph_logic(
             arguments["nodes"], arguments["edges"], arguments["name"]

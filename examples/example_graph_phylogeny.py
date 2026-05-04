@@ -52,8 +52,10 @@ def demo_knowledge_graph() -> None:
     ]
 
     graph = _create_graph_logic(nodes, edges, "tech-stack")
-    print(f"Graph: {graph['node_count']} nodes, {graph['edge_count']} edges, "
-          f"density={graph['density']:.3f}\n")
+    print(
+        f"Graph: {graph['node_count']} nodes, {graph['edge_count']} edges, "
+        f"density={graph['density']:.3f}\n"
+    )
 
     # Degree centrality — most connected nodes
     centrality = _compute_centrality_logic({"nodes": nodes, "edges": edges}, "degree")
@@ -66,7 +68,9 @@ def demo_knowledge_graph() -> None:
     graph_data = {"nodes": nodes, "edges": edges}
     path_result = _query_graph_logic(graph_data, "path:Docker:PostgreSQL")
     if path_result["found"]:
-        print(f"Path Docker→PostgreSQL: {' → '.join(path_result['result'])} (length {path_result['length']})\n")
+        print(
+            f"Path Docker→PostgreSQL: {' → '.join(path_result['result'])} (length {path_result['length']})\n"
+        )
     else:
         print("No path found from Docker to PostgreSQL\n")
 
@@ -100,7 +104,9 @@ def demo_evolution() -> None:
     best = max(final_pop, key=lambda x: x["fitness"])
     print(f"After {result['generations_run']} generations:")
     print(f"  Avg fitness: {avg_final:.3f} (delta: {avg_final - avg_initial:+.3f})")
-    print(f"  Best agent:  fitness={best['fitness']:.3f}, genes={[round(g, 2) for g in best['genes'][:3]]}...\n")
+    print(
+        f"  Best agent:  fitness={best['fitness']:.3f}, genes={[round(g, 2) for g in best['genes'][:3]]}...\n"
+    )
 
 
 def demo_phylogeny() -> None:
@@ -109,11 +115,11 @@ def demo_phylogeny() -> None:
 
     sequences = {
         "Original": "ACGTACGTACGTACGT",
-        "Alpha":    "ACGTACGTACGTAGGT",
-        "Beta":     "ACGTACGTACGTAGCT",
-        "Delta":    "ACGTATGTACGTAGGT",
-        "Omicron":  "TCGTACGTATGTAGGT",
-        "XBB":      "TCGTACGTATGCAGGT",
+        "Alpha": "ACGTACGTACGTAGGT",
+        "Beta": "ACGTACGTACGTAGCT",
+        "Delta": "ACGTATGTACGTAGGT",
+        "Omicron": "TCGTACGTATGTAGGT",
+        "XBB": "TCGTACGTATGCAGGT",
     }
 
     result = _compute_phylogeny_logic(list(sequences.values()), method="upgma")

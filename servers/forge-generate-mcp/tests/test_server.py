@@ -1,4 +1,5 @@
 """Tests for forge-generate-mcp server."""
+
 import json
 import os
 import sys

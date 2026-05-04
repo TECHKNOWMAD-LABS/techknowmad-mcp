@@ -1,4 +1,5 @@
 """Tests for trace-agent-mcp server."""
+
 import json
 import os
 import sys

@@ -1,4 +1,5 @@
 """Extended tests for idea-killer-mcp — targeting 90%+ coverage."""
+
 import json
 import os
 import sys
@@ -37,7 +38,9 @@ class TestKillIdeaLogic:
 
     def test_severity_boosted_for_innovative_ideas(self):
         result_normal = _kill_idea_logic("A platform for data management", "skeptic")
-        result_innovative = _kill_idea_logic("A revolutionary innovative disruptive new platform", "skeptic")
+        result_innovative = _kill_idea_logic(
+            "A revolutionary innovative disruptive new platform", "skeptic"
+        )
         # Innovative idea should have higher or equal severity
         assert result_innovative["max_severity"] >= result_normal["max_severity"]
 
@@ -59,12 +62,16 @@ class TestKillIdeaLogic:
 
 class TestStressTestLogic:
     def test_recession_scenario_optional_product_fails(self):
-        result = _stress_test_logic("Luxury premium expensive discretionary lifestyle app", ["recession"])
+        result = _stress_test_logic(
+            "Luxury premium expensive discretionary lifestyle app", ["recession"]
+        )
         scenario = result["scenario_results"][0]
         assert scenario["scenario"] == "recession"
 
     def test_recession_scenario_cost_reduction_passes(self):
-        result = _stress_test_logic("A tool for cost reduction and efficiency savings", ["recession"])
+        result = _stress_test_logic(
+            "A tool for cost reduction and efficiency savings", ["recession"]
+        )
         scenario = result["scenario_results"][0]
         assert scenario["result"] == "PASS"
 
@@ -72,13 +79,17 @@ class TestStressTestLogic:
         # Commodity open source idea has kill words and no signals -> PASS (it's cost-effective), actually fails
         # The competitor scenario: passes = has_kill OR not has_signal
         # A product with proprietary signals but no kill words => has_signal=True, has_kill=False => FAIL
-        result = _stress_test_logic("A patent-protected proprietary unique SaaS", ["competitor entry"])
+        result = _stress_test_logic(
+            "A patent-protected proprietary unique SaaS", ["competitor entry"]
+        )
         scenario = result["scenario_results"][0]
         # Logic: passes = has_kill OR not has_signal => False OR False => FAIL
         assert scenario["result"] == "FAIL"
 
     def test_regulation_scenario_detected(self):
-        result = _stress_test_logic("An AI data privacy platform", ["regulation change"])
+        result = _stress_test_logic(
+            "An AI data privacy platform", ["regulation change"]
+        )
         assert len(result["scenario_results"]) == 1
 
     def test_unknown_scenario_short_idea_fails(self):
@@ -98,7 +109,9 @@ class TestStressTestLogic:
         assert result["passed"] + result["failed"] == 2
 
     def test_resilience_score_range(self):
-        result = _stress_test_logic("test idea with cost savings", ["recession", "competitor entry"])
+        result = _stress_test_logic(
+            "test idea with cost savings", ["recession", "competitor entry"]
+        )
         assert 0 <= result["resilience_score"] <= 100
 
     def test_empty_scenarios(self):
@@ -113,7 +126,9 @@ class TestStressTestLogic:
 
 class TestFindFatalFlawsLogic:
     def test_tech_domain(self):
-        result = _find_fatal_flaws_logic("A complex scalable platform with legacy integrations", "tech")
+        result = _find_fatal_flaws_logic(
+            "A complex scalable platform with legacy integrations", "tech"
+        )
         assert result["domain"] == "tech"
         assert len(result["fatal_flaws"]) > 0
         assert all(f["domain"] == "tech" for f in result["fatal_flaws"])
@@ -124,7 +139,9 @@ class TestFindFatalFlawsLogic:
         assert result["flaw_count"] > 0
 
     def test_social_domain(self):
-        result = _find_fatal_flaws_logic("An AI platform collecting user data", "social")
+        result = _find_fatal_flaws_logic(
+            "An AI platform collecting user data", "social"
+        )
         assert result["domain"] == "social"
 
     def test_scientific_domain(self):
@@ -136,8 +153,12 @@ class TestFindFatalFlawsLogic:
         assert result["flaw_count"] > 0
 
     def test_impact_boosted_for_simple_ideas(self):
-        result_complex = _find_fatal_flaws_logic("A complex enterprise solution", "business")
-        result_simple = _find_fatal_flaws_logic("A simple easy fast quick startup", "business")
+        result_complex = _find_fatal_flaws_logic(
+            "A complex enterprise solution", "business"
+        )
+        result_simple = _find_fatal_flaws_logic(
+            "A simple easy fast quick startup", "business"
+        )
         assert result_simple["max_impact"] >= result_complex["max_impact"]
 
     def test_max_impact_computed(self):

@@ -1,4 +1,5 @@
 """Extended tests for ground-truth-mcp — targeting 90%+ coverage."""
+
 import json
 import os
 import sys
@@ -67,6 +68,7 @@ class TestStoreGroundTruthLogic:
     def test_timestamp_is_iso(self):
         result = _store_ground_truth_logic("k", "v", "s")
         from datetime import datetime
+
         datetime.fromisoformat(result["timestamp"])
 
 
@@ -90,7 +92,9 @@ class TestValidateClaimLogic:
 
     def test_verdict_supported(self):
         for i in range(5):
-            _store_ground_truth_logic(f"k{i}", "python is a great programming language tool", f"src{i}")
+            _store_ground_truth_logic(
+                f"k{i}", "python is a great programming language tool", f"src{i}"
+            )
         result = _validate_claim_logic("python programming language", [])
         # Multiple overlapping facts should push to supported
         assert result["confidence"] >= 0
@@ -116,7 +120,9 @@ class TestValidateClaimLogic:
 class TestCompareOutputsLogic:
     def test_longer_wins_detail_criterion(self):
         short = "short"
-        long_text = "This is a very comprehensive and detailed response covering many aspects"
+        long_text = (
+            "This is a very comprehensive and detailed response covering many aspects"
+        )
         result = _compare_outputs_logic(short, long_text, ["comprehensive", "detail"])
         assert result["overall_winner"] == "B"
 
@@ -129,7 +135,12 @@ class TestCompareOutputsLogic:
         a = "accuracy is high quality"
         b = "accuracy is low"
         result = _compare_outputs_logic(a, b, ["accuracy", "quality"])
-        assert result["wins_a"] + result["wins_b"] + (1 if result["overall_winner"] == "TIE" else 0) >= 0
+        assert (
+            result["wins_a"]
+            + result["wins_b"]
+            + (1 if result["overall_winner"] == "TIE" else 0)
+            >= 0
+        )
 
     def test_empty_criteria(self):
         result = _compare_outputs_logic("a", "b", [])
@@ -152,7 +163,11 @@ class TestHandleCallToolMCP:
     async def test_store_validate_workflow(self):
         r1 = await handle_call_tool(
             "store_ground_truth",
-            {"key": "fact-climate", "value": "Climate change is driven by CO2 emissions", "source": "ipcc"},
+            {
+                "key": "fact-climate",
+                "value": "Climate change is driven by CO2 emissions",
+                "source": "ipcc",
+            },
         )
         d1 = json.loads(r1[0].text)
         assert d1["status"] == "stored"

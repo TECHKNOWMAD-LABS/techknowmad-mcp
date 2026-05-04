@@ -1,4 +1,5 @@
 """Tests for idea-killer-mcp server."""
+
 import json
 import os
 import sys

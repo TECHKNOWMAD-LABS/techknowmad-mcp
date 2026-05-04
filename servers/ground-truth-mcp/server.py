@@ -1,4 +1,5 @@
 """ground-truth-mcp — Validate claims against ground truth."""
+
 import json
 from datetime import datetime, timezone
 from typing import Any
@@ -53,9 +54,13 @@ def _validate_claim_logic(claim: str, evidence: list) -> dict:
         fact_tokens = set(fact["value"].lower().split())
         overlap = len(claim_tokens & fact_tokens) / max(len(claim_tokens), 1)
         if overlap >= 0.3:
-            supporting.append({"key": key, "fact": fact["value"], "overlap": round(overlap, 3)})
+            supporting.append(
+                {"key": key, "fact": fact["value"], "overlap": round(overlap, 3)}
+            )
         elif overlap < 0.1 and len(fact_tokens) > 3:
-            contradicting.append({"key": key, "fact": fact["value"], "overlap": round(overlap, 3)})
+            contradicting.append(
+                {"key": key, "fact": fact["value"], "overlap": round(overlap, 3)}
+            )
 
     # Check provided evidence
     evidence_support = 0
@@ -63,18 +68,30 @@ def _validate_claim_logic(claim: str, evidence: list) -> dict:
         overlap = _token_overlap(claim, str(ev))
         if overlap >= 0.2:
             evidence_support += 1
-            supporting.append({"source": "evidence", "fact": str(ev)[:100], "overlap": round(overlap, 3)})
+            supporting.append(
+                {
+                    "source": "evidence",
+                    "fact": str(ev)[:100],
+                    "overlap": round(overlap, 3),
+                }
+            )
 
     # Compute confidence
     support_score = len(supporting) * 20
     contradict_penalty = len(contradicting) * 15
     evidence_boost = min(30, evidence_support * 10)
-    confidence = max(0, min(100, support_score - contradict_penalty + evidence_boost + 10))
+    confidence = max(
+        0, min(100, support_score - contradict_penalty + evidence_boost + 10)
+    )
 
     return {
         "claim": claim[:200],
         "confidence": confidence,
-        "verdict": "SUPPORTED" if confidence >= 50 else "UNSUPPORTED" if confidence < 25 else "UNCERTAIN",
+        "verdict": "SUPPORTED"
+        if confidence >= 50
+        else "UNSUPPORTED"
+        if confidence < 25
+        else "UNCERTAIN",
         "supporting_facts": supporting[:5],
         "contradicting_facts": contradicting[:5],
         "evidence_checked": len(evidence),
@@ -92,14 +109,22 @@ def _compare_outputs_logic(output_a: str, output_b: str, criteria: list) -> dict
         crit_tokens = set(crit_lower.split())
 
         # Score based on criterion keyword presence in output
-        score_a_kw = sum(1 for t in crit_tokens if t in output_a.lower()) / max(len(crit_tokens), 1)
-        score_b_kw = sum(1 for t in crit_tokens if t in output_b.lower()) / max(len(crit_tokens), 1)
+        score_a_kw = sum(1 for t in crit_tokens if t in output_a.lower()) / max(
+            len(crit_tokens), 1
+        )
+        score_b_kw = sum(1 for t in crit_tokens if t in output_b.lower()) / max(
+            len(crit_tokens), 1
+        )
 
         # Length consideration: prefer more detailed for "detail", "comprehensive" criteria
         len_a = len(output_a)
         len_b = len(output_b)
         length_ratio = len_a / max(len_b, 1)
-        if "detail" in crit_lower or "comprehensive" in crit_lower or "complete" in crit_lower:
+        if (
+            "detail" in crit_lower
+            or "comprehensive" in crit_lower
+            or "complete" in crit_lower
+        ):
             score_a_len = min(1.0, length_ratio)
             score_b_len = min(1.0, 1 / max(length_ratio, 0.01))
         else:
@@ -144,7 +169,10 @@ async def handle_list_tools() -> list[types.Tool]:
                 "properties": {
                     "key": {"type": "string", "description": "Unique key for the fact"},
                     "value": {"type": "string", "description": "The fact content"},
-                    "source": {"type": "string", "description": "Source/provenance of the fact"},
+                    "source": {
+                        "type": "string",
+                        "description": "Source/provenance of the fact",
+                    },
                 },
                 "required": ["key", "value", "source"],
             },
@@ -170,8 +198,14 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "output_a": {"type": "string", "description": "First output to compare"},
-                    "output_b": {"type": "string", "description": "Second output to compare"},
+                    "output_a": {
+                        "type": "string",
+                        "description": "First output to compare",
+                    },
+                    "output_b": {
+                        "type": "string",
+                        "description": "Second output to compare",
+                    },
                     "criteria": {
                         "type": "array",
                         "description": "List of criteria strings to compare on",
@@ -184,7 +218,9 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "store_ground_truth":
         result = _store_ground_truth_logic(
             arguments["key"], arguments["value"], arguments["source"]

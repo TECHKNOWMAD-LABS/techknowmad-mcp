@@ -1,4 +1,5 @@
 """Extended tests for edgecraft-benchmark-mcp — targeting 90%+ coverage."""
+
 import json
 import math
 import os
@@ -43,7 +44,9 @@ class TestGenerateEdgeCasesLogic:
         assert 0 in values
         assert 100 in values
         # Values below min should be filtered
-        assert all(v >= 0 for v in values if isinstance(v, int) and v not in [0 - 1, 100 + 1])
+        assert all(
+            v >= 0 for v in values if isinstance(v, int) and v not in [0 - 1, 100 + 1]
+        )
 
     def test_string_type(self):
         result = _generate_edge_cases_logic("string", {})
@@ -206,7 +209,9 @@ class TestCompareBenchmarksLogic:
         a = {"total": 100, "passed": 50, "failed": 50, "pass_rate": 50.0}
         b = {"total": 100, "passed": 100, "failed": 0, "pass_rate": 100.0}
         result = _compare_benchmarks_logic(a, b)
-        assert result["metric_comparison"]["pass_rate"]["b_vs_a_improvement_pct"] == 100.0
+        assert (
+            result["metric_comparison"]["pass_rate"]["b_vs_a_improvement_pct"] == 100.0
+        )
 
     def test_a_zero_base_no_division_error(self):
         a = {"total": 0, "passed": 0, "failed": 0, "pass_rate": 0.0}
@@ -218,17 +223,23 @@ class TestCompareBenchmarksLogic:
 @pytest.mark.asyncio
 class TestHandleCallToolMCP:
     async def test_generate_edge_cases_string(self):
-        result = await handle_call_tool("generate_edge_cases", {"input_type": "string", "constraints": {}})
+        result = await handle_call_tool(
+            "generate_edge_cases", {"input_type": "string", "constraints": {}}
+        )
         data = json.loads(result[0].text)
         assert data["input_type"] == "string"
 
     async def test_generate_edge_cases_float(self):
-        result = await handle_call_tool("generate_edge_cases", {"input_type": "float", "constraints": {}})
+        result = await handle_call_tool(
+            "generate_edge_cases", {"input_type": "float", "constraints": {}}
+        )
         data = json.loads(result[0].text)
         assert data["input_type"] == "float"
 
     async def test_generate_edge_cases_list(self):
-        result = await handle_call_tool("generate_edge_cases", {"input_type": "list", "constraints": {}})
+        result = await handle_call_tool(
+            "generate_edge_cases", {"input_type": "list", "constraints": {}}
+        )
         data = json.loads(result[0].text)
         assert data["case_count"] > 0
 
@@ -236,8 +247,18 @@ class TestHandleCallToolMCP:
         result = await handle_call_tool(
             "compare_benchmarks",
             {
-                "benchmark_a": {"total": 10, "passed": 8, "failed": 2, "pass_rate": 80.0},
-                "benchmark_b": {"total": 10, "passed": 6, "failed": 4, "pass_rate": 60.0},
+                "benchmark_a": {
+                    "total": 10,
+                    "passed": 8,
+                    "failed": 2,
+                    "pass_rate": 80.0,
+                },
+                "benchmark_b": {
+                    "total": 10,
+                    "passed": 6,
+                    "failed": 4,
+                    "pass_rate": 60.0,
+                },
             },
         )
         data = json.loads(result[0].text)

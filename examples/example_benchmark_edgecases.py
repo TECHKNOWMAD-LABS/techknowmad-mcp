@@ -7,7 +7,6 @@ Usage:
     uv run python examples/example_benchmark_edgecases.py
 """
 
-import json
 import sys
 import os
 
@@ -51,8 +50,10 @@ def main() -> None:
             {"input": [1, 2], "expected": [1, 2]},
         ],
     )
-    print(f"   Total: {bench_result['total']} | Passed: {bench_result['passed']} | "
-          f"Failed: {bench_result['failed']} | Pass rate: {bench_result['pass_rate']}%")
+    print(
+        f"   Total: {bench_result['total']} | Passed: {bench_result['passed']} | "
+        f"Failed: {bench_result['failed']} | Pass rate: {bench_result['pass_rate']}%"
+    )
     print()
 
     # 4. Compare two benchmark runs
@@ -60,8 +61,10 @@ def main() -> None:
     bench_a = {"total": 100, "passed": 85, "failed": 15, "pass_rate": 85.0}
     bench_b = {"total": 100, "passed": 92, "failed": 8, "pass_rate": 92.0}
     comparison = _compare_benchmarks_logic(bench_a, bench_b)
-    print(f"   Winner: {comparison['overall_winner']} "
-          f"(A wins: {comparison['wins_a']}, B wins: {comparison['wins_b']})")
+    print(
+        f"   Winner: {comparison['overall_winner']} "
+        f"(A wins: {comparison['wins_a']}, B wins: {comparison['wins_b']})"
+    )
     for metric, data in comparison["metric_comparison"].items():
         print(f"   {metric:12s}: A={data['a']:>6} B={data['b']:>6} => {data['winner']}")
     print()

@@ -1,8 +1,9 @@
 """Property-based tests for negativa-score using Hypothesis."""
+
 import sys
 import os
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
@@ -13,7 +14,16 @@ from servers.negativa_score.server import (
     _score_negatives_logic,
 )
 
-_VALID_DIMS = ["technical", "market", "regulatory", "execution", "financial", "social", "strategic", "operational"]
+_VALID_DIMS = [
+    "technical",
+    "market",
+    "regulatory",
+    "execution",
+    "financial",
+    "social",
+    "strategic",
+    "operational",
+]
 
 
 class TestScoreDimensionProperties:
@@ -55,7 +65,9 @@ class TestScoreDimensionProperties:
 class TestScoreNegativesProperties:
     @given(
         idea=st.text(min_size=0, max_size=200),
-        dimensions=st.lists(st.sampled_from(_VALID_DIMS), min_size=1, max_size=8, unique=True),
+        dimensions=st.lists(
+            st.sampled_from(_VALID_DIMS), min_size=1, max_size=8, unique=True
+        ),
     )
     def test_average_within_range(self, idea, dimensions):
         """average_downside is always between 0 and 10."""
@@ -65,7 +77,9 @@ class TestScoreNegativesProperties:
 
     @given(
         idea=st.text(min_size=0, max_size=200),
-        dimensions=st.lists(st.sampled_from(_VALID_DIMS), min_size=1, max_size=8, unique=True),
+        dimensions=st.lists(
+            st.sampled_from(_VALID_DIMS), min_size=1, max_size=8, unique=True
+        ),
     )
     def test_total_downside_equals_sum(self, idea, dimensions):
         """total_downside equals sum of all dimension scores."""
@@ -76,7 +90,9 @@ class TestScoreNegativesProperties:
 
     @given(
         idea=st.text(min_size=0, max_size=200),
-        dimensions=st.lists(st.sampled_from(_VALID_DIMS), min_size=1, max_size=5, unique=True),
+        dimensions=st.lists(
+            st.sampled_from(_VALID_DIMS), min_size=1, max_size=5, unique=True
+        ),
     )
     def test_all_dimensions_present_in_output(self, idea, dimensions):
         """Every requested dimension appears in output."""

@@ -1,15 +1,14 @@
 """Property-based tests for edgecraft-benchmark-mcp using Hypothesis."""
+
 import sys
 import os
 
-import pytest
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from servers.edgecraft_benchmark_mcp.server import (
     _compare_benchmarks_logic,
-    _evaluate_test_case,
     _generate_edge_cases_logic,
     _run_benchmark_logic,
 )
@@ -47,10 +46,16 @@ class TestEdgeCaseProperties:
 class TestBenchmarkProperties:
     @given(
         test_cases=st.lists(
-            st.fixed_dictionaries({
-                "input": st.one_of(st.integers(), st.text(max_size=20), st.booleans(), st.none()),
-                "expected": st.one_of(st.integers(), st.text(max_size=20), st.booleans(), st.none()),
-            }),
+            st.fixed_dictionaries(
+                {
+                    "input": st.one_of(
+                        st.integers(), st.text(max_size=20), st.booleans(), st.none()
+                    ),
+                    "expected": st.one_of(
+                        st.integers(), st.text(max_size=20), st.booleans(), st.none()
+                    ),
+                }
+            ),
             max_size=20,
         )
     )
@@ -61,10 +66,12 @@ class TestBenchmarkProperties:
 
     @given(
         test_cases=st.lists(
-            st.fixed_dictionaries({
-                "input": st.integers(min_value=-100, max_value=100),
-                "expected": st.integers(min_value=-100, max_value=100),
-            }),
+            st.fixed_dictionaries(
+                {
+                    "input": st.integers(min_value=-100, max_value=100),
+                    "expected": st.integers(min_value=-100, max_value=100),
+                }
+            ),
             min_size=1,
             max_size=50,
         )
@@ -93,8 +100,18 @@ class TestCompareProperties:
     )
     def test_compare_winner_consistent(self, total, passed):
         """overall_winner is always A, B, or TIE."""
-        a = {"total": total, "passed": passed, "failed": max(0, total - passed), "pass_rate": 50.0}
-        b = {"total": total, "passed": passed, "failed": max(0, total - passed), "pass_rate": 50.0}
+        a = {
+            "total": total,
+            "passed": passed,
+            "failed": max(0, total - passed),
+            "pass_rate": 50.0,
+        }
+        b = {
+            "total": total,
+            "passed": passed,
+            "failed": max(0, total - passed),
+            "pass_rate": 50.0,
+        }
         result = _compare_benchmarks_logic(a, b)
         assert result["overall_winner"] in ("A", "B", "TIE")
 

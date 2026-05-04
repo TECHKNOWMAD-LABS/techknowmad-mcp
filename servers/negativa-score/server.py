@@ -1,4 +1,5 @@
 """negativa-score — Score ideas by negatives and downsides."""
+
 import json
 from typing import Any
 
@@ -9,14 +10,94 @@ app = Server("negativa-score")
 
 # Risk keyword mappings per dimension
 _RISK_KEYWORDS: dict[str, list[str]] = {
-    "technical": ["complex", "scalab", "integrat", "legacy", "hack", "bug", "crash", "slow", "latency", "unstable"],
-    "market": ["competit", "saturate", "niche", "small market", "commodit", "price war", "churn", "commoditiz"],
-    "regulatory": ["comply", "regulat", "legal", "patent", "licens", "gdpr", "hipaa", "fda", "ban", "restrict"],
-    "execution": ["team", "hire", "resource", "deadline", "delay", "overrun", "skill gap", "turnover", "burnout"],
-    "financial": ["expensive", "cost", "burn", "runway", "debt", "loss", "revenue", "margin", "cash", "fund"],
-    "social": ["controver", "backlash", "reputat", "trust", "ethic", "bias", "discrimin", "harm", "privacy"],
-    "strategic": ["competitor", "pivot", "misalign", "dilut", "distract", "focus", "bloat", "overextend"],
-    "operational": ["manual", "bottleneck", "inefficien", "scale", "fragile", "single point", "outage", "downtime"],
+    "technical": [
+        "complex",
+        "scalab",
+        "integrat",
+        "legacy",
+        "hack",
+        "bug",
+        "crash",
+        "slow",
+        "latency",
+        "unstable",
+    ],
+    "market": [
+        "competit",
+        "saturate",
+        "niche",
+        "small market",
+        "commodit",
+        "price war",
+        "churn",
+        "commoditiz",
+    ],
+    "regulatory": [
+        "comply",
+        "regulat",
+        "legal",
+        "patent",
+        "licens",
+        "gdpr",
+        "hipaa",
+        "fda",
+        "ban",
+        "restrict",
+    ],
+    "execution": [
+        "team",
+        "hire",
+        "resource",
+        "deadline",
+        "delay",
+        "overrun",
+        "skill gap",
+        "turnover",
+        "burnout",
+    ],
+    "financial": [
+        "expensive",
+        "cost",
+        "burn",
+        "runway",
+        "debt",
+        "loss",
+        "revenue",
+        "margin",
+        "cash",
+        "fund",
+    ],
+    "social": [
+        "controver",
+        "backlash",
+        "reputat",
+        "trust",
+        "ethic",
+        "bias",
+        "discrimin",
+        "harm",
+        "privacy",
+    ],
+    "strategic": [
+        "competitor",
+        "pivot",
+        "misalign",
+        "dilut",
+        "distract",
+        "focus",
+        "bloat",
+        "overextend",
+    ],
+    "operational": [
+        "manual",
+        "bottleneck",
+        "inefficien",
+        "scale",
+        "fragile",
+        "single point",
+        "outage",
+        "downtime",
+    ],
 }
 
 _DIMENSION_EXPLANATIONS: dict[str, str] = {
@@ -72,7 +153,9 @@ def _rank_by_downside_logic(ideas: list, dimension: str) -> list:
     scored = []
     for idea in ideas:
         score, explanation = _score_dimension(str(idea), dimension)
-        scored.append({"idea": str(idea)[:200], "score": score, "explanation": explanation})
+        scored.append(
+            {"idea": str(idea)[:200], "score": score, "explanation": explanation}
+        )
     scored.sort(key=lambda x: x["score"], reverse=True)
     return scored
 
@@ -125,8 +208,14 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "ideas": {"type": "array", "description": "List of idea strings to rank"},
-                    "dimension": {"type": "string", "description": "Dimension to rank by"},
+                    "ideas": {
+                        "type": "array",
+                        "description": "List of idea strings to rank",
+                    },
+                    "dimension": {
+                        "type": "string",
+                        "description": "Dimension to rank by",
+                    },
                 },
                 "required": ["ideas", "dimension"],
             },
@@ -146,7 +235,9 @@ async def handle_list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+async def handle_call_tool(
+    name: str, arguments: dict[str, Any]
+) -> list[types.TextContent]:
     if name == "score_negatives":
         result = _score_negatives_logic(arguments["idea"], arguments["dimensions"])
         return [types.TextContent(type="text", text=json.dumps(result))]
