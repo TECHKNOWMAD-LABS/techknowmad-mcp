@@ -1,9 +1,10 @@
 """Property-based tests for phyloid-evolve using Hypothesis."""
 
-import sys
 import os
+import sys
 
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
